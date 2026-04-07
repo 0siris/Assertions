@@ -64,6 +64,28 @@ public static class Asserts {
 
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T AssertArgumentNotNull<T>(
+        [NotNull] this T? obj,
+        string? message = null,
+        [CallerArgumentExpression("obj")] string? argName = null
+    ) where T : class =>
+        obj ?? throw new ArgumentNullException(argName, message);
+
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T AssertArgumentNotNull<T>(
+        this T? obj,
+        string? message = null,
+        [CallerArgumentExpression("obj")] string? argName = null
+    ) where T : struct {
+        if (obj is { } value)
+            return value;
+
+        throw new ArgumentNullException(argName, message);
+    }
+
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void AssertNull<T>(
         this T? obj,
         string? message = null,
