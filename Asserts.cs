@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 
 namespace Assertions;
 
@@ -133,7 +132,6 @@ public class AssertException : Exception {
     public string? Expression { get; init; }
 
     public AssertException() { }
-    protected AssertException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     public AssertException(string? message) : base(message) { }
 
     public AssertException(string? message, string? expression) : base(message is not null && expression is not null
@@ -147,11 +145,9 @@ public class AssertException : Exception {
 public class AssertException<T> : AssertException {
     public readonly T Value;
 
-    protected AssertException(SerializationInfo info, StreamingContext context) : base(info, context) =>
-        Value = default!;
-
     public AssertException(string? message, T value) : base(message) => Value = value;
 
     public AssertException(string? message, T value, Exception? innerException) : base(message, innerException) =>
         Value = value;
 }
+
