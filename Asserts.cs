@@ -26,6 +26,28 @@ public static class Asserts {
     ) =>
         booleanExpression ? true : throw new AssertException(message, expression);
 
+
+
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool AssertFalse<T>(
+        [DoesNotReturnIf(true)] this bool booleanExpression,
+        string message = "Boolean expression asserted to be true is false.",
+        [CallerArgumentExpression("booleanExpression")]
+        string? expression = null,
+        ThrowException<T>? makeException = null
+    ) where T:Exception {
+        if (!booleanExpression)
+            return false;
+
+        if (makeException?.Invoke(message) is {} e)
+            throw e;
+        
+        throw new AssertException(message, expression);
+    }
+
+    public delegate T ThrowException<out T>(string message) where T:Exception;
+
     [DebuggerStepThrough]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool AssertFalse(
@@ -147,6 +169,22 @@ public static class Asserts {
         if (!char.IsLetter(letter))
             throw new AssertException(errorMessage ?? "char must be alphabetic.");
         return letter;
+    }
+
+    /// <summary>
+    /// Asserts that the character is alphabetic and returns it unchanged.
+    /// </summary>
+    /// <param name="value">Character to validate.</param>
+    /// <param name="errorMessage">Optional custom assertion message.</param>
+    /// <returns>The validated alphabetic character.</returns>
+    /// <exception cref="AssertException">Thrown when <paramref name="value" /> is not alphabetic.</exception>
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static char AssertIsLetter(this char value, string? errorMessage = null) {
+        if (!char.IsLetter(value))
+            throw new AssertException(errorMessage ?? "char must be alphabetic.");
+
+        return value;
     }
 }
 
