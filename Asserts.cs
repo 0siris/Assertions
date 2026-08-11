@@ -146,7 +146,7 @@ public static class Asserts {
     public static NewType AssertTypeOf<NewType>(this object? obj) {
         if (obj is NewType c)
             return c;
-        throw new AssertException<object>($"Obj is not type of {typeof(NewType).Name}", obj);
+        throw new AssertException<object?>($"Obj is not type of {typeof(NewType).Name}", obj);
     }
 
     [DebuggerStepThrough]
@@ -185,6 +185,15 @@ public static class Asserts {
             throw new AssertException(errorMessage ?? "char must be alphabetic.");
 
         return value;
+    }
+    
+    [DebuggerStepThrough]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T[] AssertLengthBiggerOrEqual<T>(this T[]? value, int minLength) {
+        var result = value.AssertNotNull();
+        if (result.Length >= minLength)
+            return result;
+        throw new AssertException<T[]>("Min len not satisfied", result);
     }
 }
 
